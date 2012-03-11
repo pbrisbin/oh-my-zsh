@@ -9,7 +9,7 @@
 #   To load multiple identies use the identities style, For
 #   example:
 #
-#     zstyle :omz:plugins:ssh-agent id_rsa id_rsa2 id_github
+#     zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa2 id_github
 #
 #
 # CREDITS
