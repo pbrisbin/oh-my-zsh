@@ -14,6 +14,8 @@ else
   RPROMPT='$(return_code)'
 fi
 
+SPROMPT="correct $fg_bold[red]%R$reset_color to $fg_bold[green]%r$reset_color [ynae]? "
+
 ZSH_THEME_GIT_PROMPT_PREFIX=" (%{$fg[red]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[blue]%}) %{$fg_bold[yellow]%}*%{$reset_color%}"
