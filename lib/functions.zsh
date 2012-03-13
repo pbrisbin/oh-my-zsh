@@ -15,3 +15,6 @@ function take() {
   cd $1
 }
 
+function have() {
+  which $1 &>/dev/null
+}
