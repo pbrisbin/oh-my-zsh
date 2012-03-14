@@ -21,7 +21,7 @@ function prompt_pbrisbin_precmd () {
       dirty_formatted=''
     fi
 
-    git_info="$branch_formatted $dirty_formatted"
+    git_info="$branch_formatted$dirty_formatted"
   fi
 }
 
@@ -33,10 +33,10 @@ function prompt_pbrisbin_setup() {
   autoload -Uz add-zsh-hook
   add-zsh-hook precmd prompt_pbrisbin_precmd
 
-  zstyle ':omz:plugin:git:prompt' branch '%%B%F{cyan}(%f%F{red}%b%f%F{cyan})%f%%b'
-  zstyle ':omz:plugin:git:prompt' dirty  '%B%F{yellow}*%f%b'
+  zstyle ':omz:plugin:git:prompt' branch ' %%B%F{cyan}(%f%F{red}%b%f%F{cyan})%f%%b'
+  zstyle ':omz:plugin:git:prompt' dirty  ' %B%F{yellow}*%f%b'
 
-  PROMPT='%F{green}%p%f %F{cyan}%c%f ${git_info} '
+  PROMPT='%F{green}%p%f %F{cyan}%c%f${git_info} '
 
   if (( $+commands[rvm-prompt] )); then
     RPROMPT='%B%(?::%F{red}%? %f) %F{black}$(rvm-prompt i v g)%f%b '
