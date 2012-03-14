@@ -46,7 +46,8 @@ alias sl='ls'            # I often screw this up.
 alias _='sudo'
 alias b="$BROWSER"
 alias cd='nocorrect cd'
-alias cp='nocorrect cp -i'
+#alias cp='nocorrect cp -i'
+alias cp='nocorrect cp'
 alias df='df -kh'
 alias du='du -kh'
 alias e="$EDITOR"
@@ -54,16 +55,19 @@ alias find='noglob find'
 alias fc='noglob fc'
 alias gcc='nocorrect gcc'
 alias history='noglob history'
-alias ln='nocorrect ln -i'
+#alias ln='nocorrect ln -i'
+alias ln='nocorrect ln'
 alias locate='noglob locate'
 alias man='nocorrect man'
 alias mkdir='nocorrect mkdir -p'
-alias mv='nocorrect mv -i'
+#alias mv='nocorrect mv -i'
+alias mv='nocorrect mv'
 alias p="$PAGER"
 alias po='popd'
 alias pu='pushd'
 alias rake='noglob rake'
-alias rm='nocorrect rm -i'
+#alias rm='nocorrect rm -i'
+alias rm='nocorrect rm'
 alias scp='nocorrect scp'
 alias type='type -a'
 
@@ -139,3 +143,27 @@ fi
 (( $+commands[heroku] )) && alias heroku='nocorrect heroku'
 (( $+commands[mysql] )) && alias mysql='nocorrect mysql'
 
+# Custom
+alias myip='printf "%s\n" "$(curl --silent http://tnx.nl/ip)"'
+alias path='echo -e "${PATH//:/\n}"'
+alias apptree='tree -I "dist|config|static|pandoc|tmp"'
+
+if (( $+commands[mpc] )); then
+  alias n='mpc next'
+  alias p='mpc prev'
+
+  (( $+commands[albumbler] )) && alias a='albumbler'
+fi
+
+if [[ -b '/dev/sr0' ]]; then
+  alias eject='eject -T /dev/sr0'
+  alias mountdvd='sudo mount -t iso9660 -o ro /dev/sr0 /media/dvd/'
+fi
+
+if (( $+commands[mplayer] )); then
+  alias playiso='mplayer dvd://1 -dvd-device'
+  alias playdvd='mplayer dvdnav:// /dev/sr0'
+  alias playcda='mplayer cdda:// -cdrom-device /dev/sr0 -cache 10000'
+fi
+
+alias updatehtpc='curl "http://htpc:8080/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.updatelibrary(video)"'
