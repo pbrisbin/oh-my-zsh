@@ -1,0 +1,12 @@
+# Generate and publich rdocs for local sources
+function rdocs() {
+  (( $+commands[rdoc] )) || return 1
+
+  local name="${PWD##*/}"
+  local there="$HOME/Code/haskell/devsite/static/docs/ruby/$name"
+
+  rdoc --title="$name" "$@"
+
+  rm -rf "$there"
+  cp -r doc "$there"
+}

@@ -1,0 +1,11 @@
+# Set an ad-hoc timer
+function timer() {
+  (( $+commands[zenity] )) || return 1
+
+  if [[ -n $DISPLAY ]]; then
+    local N="${1:-5m}"; shift
+
+    (sleep $N && zenity --info --title="Time's Up" --text="${*:-DING}") &
+    echo "timer set for $N"
+  fi
+}

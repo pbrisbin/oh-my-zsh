@@ -1,0 +1,15 @@
+# Check for new comments on my blog
+function newcomments() {
+  if (( $+commands[psql] )); then
+    psql -U pbrisbin pbrisbin << EOF
+select
+  id,
+  "threadId",
+  "timeStamp",
+  "userEmail",
+  substring("content", 1, 60)
+from "SqlComment"
+order by "timeStamp" asc;
+EOF
+  fi
+}

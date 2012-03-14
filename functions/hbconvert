@@ -1,0 +1,15 @@
+# Conviert an existing file to iPad compatible
+function hbconvert() {
+  (( $+commands[HandBrakeCLI] )) || return 1
+
+  if (( $# )); then
+    local in="$1" out drop="$HOME/Movies/converted"; shift
+    [[ -d "$drop" ]] || mkdir -p "$drop"
+
+    out="$drop/$(basename "${in%.*}").mp4"
+
+    echo "convert $in --> $out"
+    HandBrakeCLI -Z iPad "$@" -i "$in" -o "$out" 2>/dev/null
+    echo
+  fi
+}

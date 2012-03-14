@@ -1,0 +1,15 @@
+# Generate and publish haddocks for local sources
+function hdocs() {
+  (( $+commands[cabal] )) || return 1
+
+  local  name="${PWD##*/}"
+  local  here="dist/doc/html/$name"
+  local there="$HOME/Code/haskell/devsite/static/docs/haskell/$name"
+
+  cabal haddock \
+    --html-location='http://hackage.haskell.org/packages/archive/$pkg/latest/doc/html' \
+    --hyperlink-source "$@" || return 1
+
+  rm -rf "$there"
+  cp -r "$here" "$there"
+}

@@ -1,0 +1,15 @@
+# Rip a dvd using handbrake and iPad quality
+function hbrip() {
+  (( $+commands[HandBrakeCLI] )) || return 1
+
+  if (( $# )); then
+    local name="$1" out drop="$HOME/Movies"; shift
+    [[ -d "$drop" ]] || mkdir -p "$drop"
+
+    out="$drop/$name.mp4"
+
+    echo "rip /dev/sr0 --> $out"
+    HandBrakeCLI -Z iPad "$@" -i /dev/sr0 -o "$out" 2>/dev/null
+    echo
+  fi
+}

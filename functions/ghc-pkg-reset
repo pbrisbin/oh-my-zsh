@@ -1,0 +1,11 @@
+# Remove all cabal packages
+function ghc-pkg-reset() {
+  read -p 'Are you sure (yes/no)? ' ans
+
+  if [[ "$ans" == 'yes' ]]; then
+    rm -rf "$HOME/.cabal/packages"/*/*
+    rm -rf "$HOME/.cabal/bin"/*
+    rm -rf "$HOME/.ghc"
+  fi
+}
+
