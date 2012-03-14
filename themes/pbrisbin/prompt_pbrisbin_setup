@@ -7,7 +7,7 @@ function prompt_pbrisbin_precmd () {
 
   git_info=''
 
-  if [[ -d ".git" ]]; then
+  if [[ -e ".git" ]]; then
     local ref dirty branch
 
     ref=$(git symbolic-ref HEAD 2>/dev/null) || return
