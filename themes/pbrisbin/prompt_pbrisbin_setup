@@ -1,0 +1,50 @@
+# vim: set ft=zsh:
+
+# sets git_info with minimal (read: fast) information
+function prompt_pbrisbin_precmd () {
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+
+  git_info=''
+
+  if [[ -d ".git" ]]; then
+    local ref dirty branch
+
+    ref=$(git symbolic-ref HEAD 2>/dev/null) || return
+
+    zstyle -s ':omz:plugin:git:prompt' branch 'branch_format'
+    zformat -f branch_formatted "$branch_format" "b:${ref#refs/heads/}"
+
+    if [[ -n $(git status -s 2>/dev/null) ]]; then
+      zstyle -s ':omz:plugin:git:prompt' dirty 'dirty_formatted'
+    else
+      dirty_formatted=''
+    fi
+
+    git_info="$branch_formatted $dirty_formatted"
+  fi
+}
+
+function prompt_pbrisbin_setup() {
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+  prompt_opts=(cr percent subst)
+
+  autoload -Uz add-zsh-hook
+  add-zsh-hook precmd prompt_pbrisbin_precmd
+
+  zstyle ':omz:plugin:git:prompt' branch '%%B%F{cyan}(%f%F{red}%b%f%F{cyan})%f%%b'
+  zstyle ':omz:plugin:git:prompt' dirty  '%B%F{yellow}*%f%b'
+
+  PROMPT='%F{green}%p%f %F{cyan}%c%f ${git_info} '
+
+  if (( $+commands[rvm-prompt] )); then
+    RPROMPT='%B%(?::%F{red}%? %f) %F{black}$(rvm-prompt i v g)%f%b '
+  else
+    RPROMPT='%B%(?::%F{red}%? %f)%b '
+  fi
+
+  SPROMPT='correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+}
+
+prompt_pbrisbin_setup "$@"
