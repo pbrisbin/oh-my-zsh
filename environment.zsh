@@ -119,10 +119,6 @@ path=(
   $path
 )
 
-if (( $+commands[brew] )); then
-  path=( "$(brew --prefix coreutils)/libexec/gnubin" $path )
-fi
-
 if (( $+commands[albumart.php] )); then
   export AWS_LIB="$HOME/Code/php/albumart/lib"
   export AWS_CERT_FILE="$HOME/.aws/cert-67RVMJTXXBDL4ZZOYSYBI3A7ZP56N3XD.pem"
