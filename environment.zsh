@@ -137,6 +137,6 @@ fi
 
 (( $+commands[chromium] )) && export BROWSER=chromium
 
-source "$HOME/.screen/bashrc.screen"
+source "$HOME/.screen/screen.sh"
 source "$HOME/.aws_keys"
 source "$HOME/.secrets"
