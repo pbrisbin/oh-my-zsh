@@ -117,6 +117,7 @@ path=(
   "$HOME/.cabal/bin"
   "$HOME/Code/bin"
   "$HOME/.bin"
+  /usr/local/Cellar/coreutils/8.15/libexec/gnubin/
   $path
 )
 
