@@ -66,9 +66,8 @@ for path_file in /etc/paths.d/*(.N); do
 done
 
 # Language
-if [[ -z "$LANG" ]]; then
-  eval "$(locale)"
-fi
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.utf8
 
 # Editors
 export EDITOR="vim"
