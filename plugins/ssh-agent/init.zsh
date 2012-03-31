@@ -21,13 +21,13 @@
 #
 
 if (( ! $+commands[ssh-agent] )); then
-  return
+  return 1
 fi
 
 _ssh_agent_env="${HOME}/.ssh/environment-${HOST}"
 _ssh_agent_forwarding=
 
-function _ssh-agent-start() {
+function _ssh-agent-start {
   local -a identities
 
   # Start ssh-agent and setup the environment.

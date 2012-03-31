@@ -18,10 +18,7 @@ zstyle ':omz:plugin:git:prompt' ahead 'ahead:%A'
 zstyle ':omz:plugin:git:prompt' behind 'behind:%B'
 
 # %b - Branch name.
-zstyle ':omz:plugin:git:prompt' branch '%b'
-
-# %C - Indicator to notify of clean branch.
-zstyle ':omz:plugin:git:prompt' clean 'clean'
+zstyle ':omz:plugin:git:prompt' branch 'branch:%b'
 
 # %c - SHA-1 hash.
 zstyle ':omz:plugin:git:prompt' commit 'commit:%c'
@@ -29,14 +26,17 @@ zstyle ':omz:plugin:git:prompt' commit 'commit:%c'
 # %d - Indicator to notify of deleted files.
 zstyle ':omz:plugin:git:prompt' deleted 'deleted:%d'
 
-# %D - Indicator to notify of dirty branch.
-zstyle ':omz:plugin:git:prompt' dirty 'dirty'
+# %D - Indicator to notify of dirty files.
+zstyle ':omz:plugin:git:prompt' dirty 'dirty:%D'
 
 # %m - Indicator to notify of modified files.
 zstyle ':omz:plugin:git:prompt' modified 'modified:%m'
 
+# %p - HEAD position in relation to the nearest branch, remote, tag.
+zstyle ':omz:plugin:git:prompt' position 'position:%p'
+
 # %R - Remote name.
-zstyle ':omz:plugin:git:prompt' remote '%R'
+zstyle ':omz:plugin:git:prompt' remote 'remote:%R'
 
 # %r - Indicator to notify of renamed files.
 zstyle ':omz:plugin:git:prompt' renamed 'renamed:%r'
@@ -51,7 +51,7 @@ zstyle ':omz:plugin:git:prompt' unmerged 'unmerged:%U'
 zstyle ':omz:plugin:git:prompt' untracked 'untracked:%u'
 
 # Left prompt.
-zstyle ':omz:plugin:git:prompt' prompt ' git:(%b %D%C)'
+zstyle ':omz:plugin:git:prompt' prompt ' git:(%b %D)'
 
 # Right prompt.
 zstyle ':omz:plugin:git:prompt' rprompt ''

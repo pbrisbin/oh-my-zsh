@@ -10,8 +10,9 @@ autoload -Uz url-quote-magic
 zle -N self-insert url-quote-magic
 
 # General
+setopt BRACE_CCL          # Allow brace character class list expansion.
 setopt RC_QUOTES          # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'.
-unsetopt MAIL_WARNING     # Don't print a warning message if a mail file has been accessed
+unsetopt MAIL_WARNING     # Don't print a warning message if a mail file has been accessed.
 
 # Jobs
 setopt LONG_LIST_JOBS     # List jobs in the long format by default.
@@ -22,8 +23,8 @@ unsetopt HUP              # Don't kill jobs on shell exit.
 unsetopt CHECK_JOBS       # Don't report on jobs when shell exit.
 
 # PATH
-typeset -U cdpath fpath mailpath manpath path
-typeset -UT INFOPATH infopath
+typeset -gU cdpath fpath mailpath manpath path
+typeset -gUT INFOPATH infopath
 
 cdpath=(
   $HOME
@@ -88,6 +89,9 @@ fi
 export LESSCHARSET="UTF-8"
 export LESSHISTFILE='-'
 export LESSEDIT='vim ?lm+%lm. %f'
+
+# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
+# Remove -X and -F (exit if the content fits on one screen) to enable it.
 export LESS='-F -g -i -M -R -S -w -X -z-4'
 
 if (( $+commands[lesspipe.sh] )); then
