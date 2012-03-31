@@ -46,7 +46,6 @@ alias sl='ls'            # I often screw this up.
 alias _='sudo'
 alias b="$BROWSER"
 alias cd='nocorrect cd'
-#alias cp='nocorrect cp -i'
 alias cp='nocorrect cp'
 alias df='df -kh'
 alias du='du -kh'
@@ -55,18 +54,15 @@ alias find='noglob find'
 alias fc='noglob fc'
 alias gcc='nocorrect gcc'
 alias history='noglob history'
-#alias ln='nocorrect ln -i'
 alias ln='nocorrect ln'
 alias locate='noglob locate'
 alias man='nocorrect man'
 alias mkdir='nocorrect mkdir -p'
-#alias mv='nocorrect mv -i'
 alias mv='nocorrect mv'
 alias p="$PAGER"
 alias po='popd'
 alias pu='pushd'
 alias rake='noglob rake'
-#alias rm='nocorrect rm -i'
 alias rm='nocorrect rm'
 alias scp='nocorrect scp'
 alias type='type -a'
@@ -92,49 +88,6 @@ fi
 
 alias pbc='pbcopy'
 alias pbp='pbpaste'
-
-# Top
-if (( $+commands[htop] )); then
-  alias top=htop
-else
-  alias topm='top -o vsize'
-  alias topc='top -o cpu'
-fi
-
-# Diff/Make
-if zstyle -t ':omz:alias:diff' color; then
-  function diff() {
-    if (( $+commands[colordiff] )); then
-      "$commands[diff]" --unified "$@" | colordiff --difftype diffu
-    elif (( $+commands[git] )); then
-      git --no-pager diff --color=auto --no-ext-diff --no-index "$@"
-    else
-      "$commands[diff]" --unified "$@"
-    fi
-  }
-
-  function wdiff() {
-    if (( $+commands[wdiff] )); then
-      "$commands[wdiff]" \
-        --avoid-wraps \
-        --start-delete="$(print -n $FG[red])" \
-        --end-delete="$(print -n $FG[none])" \
-        --start-insert="$(print -n $FG[green])" \
-        --end-insert="$(print -n $FG[none])" \
-        "$@" \
-      | sed 's/^\(@@\( [+-][[:digit:]]*,[[:digit:]]*\)\{2\} @@\)$/;5;6m\10m/g'
-    elif (( $+commands[git] )); then
-      git --no-pager diff --color=auto --no-ext-diff --no-index --color-words "$@"
-    else
-      print "zsh: command not found: $0" >&2
-    fi
-  }
-
-  if (( $+commands[colormake] )); then
-    alias make='colormake'
-    compdef colormake=make
-  fi
-fi
 
 # Miscellaneous
 (( $+commands[ack] )) && alias afind='nocorrect ack'

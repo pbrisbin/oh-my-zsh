@@ -27,22 +27,17 @@ typeset -UT INFOPATH infopath
 
 cdpath=(
   $HOME
-  #$HOME/Developer
   $HOME/Code
   $cdpath
 )
 
 infopath=(
-  #$HOME/.tilde/share/info
-  #$HOME/.tilde/opt/share/info
   /usr/local/share/info
   /usr/share/info
   $infopath
 )
 
 manpath=(
-  #$HOME/.tilde/share/man
-  #$HOME/.tilde/opt/share/man
   /usr/local/share/man
   /usr/share/man
   $manpath
@@ -53,8 +48,6 @@ for path_file in /etc/manpaths.d/*(.N); do
 done
 
 path=(
-  #$HOME/.tilde/{bin,sbin}
-  #$HOME/.tilde/opt/{bin,sbin}
   /usr/local/{bin,sbin}
   /usr/{bin,sbin}
   /{bin,sbin}
@@ -72,8 +65,8 @@ if [[ "$OSTYPE" != darwin* ]]; then
 fi
 
 # Editors
-export EDITOR="vim"
-export VISUAL="vim"
+export EDITOR='vim'
+export VISUAL='vim'
 export PAGER='less'
 
 # Grep
@@ -86,8 +79,8 @@ fi
 if [[ "$OSTYPE" == darwin* ]]; then
   export BROWSER='open'
 else
-  if (( $+commands[xdg-open] )); then
-    export BROWSER='xdg-open'
+  if (( $+commands[chromium] )); then
+    export BROWSER='chromium'
   fi
 fi
 
@@ -114,8 +107,8 @@ fi
 
 # Custom
 path=(
-  "$HOME/.cabal/bin"
   "$HOME/Code/bin"
+  "$HOME/.cabal/bin"
   "$HOME/.bin"
   /usr/local/Cellar/coreutils/8.15/libexec/gnubin/
   $path
@@ -136,8 +129,6 @@ if (( $+commands[mpc] )); then
   export MPD_HOST=192.168.0.5
   export MPD_PORT=6600
 fi
-
-(( $+commands[chromium] )) && export BROWSER=chromium
 
 source "$HOME/.screen/screen.sh"
 source "$HOME/.aws_keys"
