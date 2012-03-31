@@ -8,20 +8,53 @@ function prompt_pbrisbin_precmd () {
   git_info=''
 
   if [[ -e ".git" ]]; then
-    local ref dirty branch
+    local ref branch_format branch_formatted staged_modified \
+      staged_deleted staged_added modified deleted added sed_script \
+      staged_formatted modified_formatted deleted_formatted \
+      added_formatted
 
     ref=$(git symbolic-ref HEAD 2>/dev/null) || return
 
     zstyle -s ':omz:plugin:git:prompt' branch 'branch_format'
     zformat -f branch_formatted "$branch_format" "b:${ref#refs/heads/}"
 
-    if [[ -n $(git status -s 2>/dev/null) ]]; then
-      zstyle -s ':omz:plugin:git:prompt' dirty 'dirty_formatted'
-    else
-      dirty_formatted=''
+    staged_modified=false; staged_deleted=false; staged_added=false
+    modified=false; deleted=false; added=false
+
+    sed_script='
+      s/^M /staged_modified=true;/
+      s/^D /staged_deleted=true;/
+      s/^A /staged_added=true;/
+      s/^ M/modified=true;/
+      s/^ D/deleted=true;/
+      s/??/added=true;/
+    '
+
+    eval $(git status -s 2>/dev/null | cut -c 1-2 | uniq | sed "$sed_script")
+
+    git_flags=''
+
+    if $staged_modified || $staged_deleted || $staged_added; then
+      zstyle -s ':omz:plugin:git:prompt' staged 'staged_formatted'
+      git_flags+=$staged_formatted
     fi
 
-    git_info="$branch_formatted$dirty_formatted"
+    if $modified; then
+      zstyle -s ':omz:plugin:git:prompt' modified 'modified_formatted'
+      git_flags+=$modified_formatted
+    fi
+
+    if $deleted; then
+      zstyle -s ':omz:plugin:git:prompt' deleted 'deleted_formatted'
+      git_flags+=$deleted_formatted
+    fi
+
+    if $added; then
+      zstyle -s ':omz:plugin:git:prompt' added 'added_formatted'
+      git_flags+=$added_formatted
+    fi
+
+    git_info="$branch_formatted"
   fi
 }
 
@@ -33,15 +66,18 @@ function prompt_pbrisbin_setup() {
   autoload -Uz add-zsh-hook
   add-zsh-hook precmd prompt_pbrisbin_precmd
 
-  zstyle ':omz:plugin:git:prompt' branch ' %%B%F{cyan}(%f%F{red}%b%f%F{cyan})%f%%b'
-  zstyle ':omz:plugin:git:prompt' dirty  ' %B%F{yellow}*%f%b'
+  zstyle ':omz:plugin:git:prompt' branch   ' %%B%F{cyan}(%f%F{red}%b%f%F{cyan})%f%%b'
+  zstyle ':omz:plugin:git:prompt' staged   ' %B%F{yellow}*%f%b'
+  zstyle ':omz:plugin:git:prompt' modified ' %B%F{green}*%f%b'
+  zstyle ':omz:plugin:git:prompt' deleted  ' %B%F{red}✖%f%b'
+  zstyle ':omz:plugin:git:prompt' added    ' %B%F{cyan}✚%f%b'
 
   PROMPT='%F{green}%p%f %F{cyan}%c%f${git_info} '
 
   if (( $+commands[rvm-prompt] )); then
-    RPROMPT='%B%(?::%F{red}%? %f) %F{black}$(rvm-prompt i v g)%f%b '
+    RPROMPT='%(?::%B%F{red}%? %f%b) ${git_flags} %B%F{black}$(rvm-prompt i v g)%f%b '
   else
-    RPROMPT='%B%(?::%F{red}%? %f)%b '
+    RPROMPT='%(?::%B%F{red}%? %f%b) ${git_flags} '
   fi
 
   SPROMPT='correct %F{red}%R%f to %F{green}%r%f [nyae]? '
