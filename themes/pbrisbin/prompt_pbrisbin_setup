@@ -1,7 +1,7 @@
 # vim: set ft=zsh:
 
 # sets git_info with minimal (read: fast) information
-function prompt_pbrisbin_precmd () {
+function prompt_pbrisbin_precmd() {
   setopt LOCAL_OPTIONS
   unsetopt XTRACE KSH_ARRAYS
 
@@ -22,6 +22,7 @@ function prompt_pbrisbin_precmd () {
     modified=false; deleted=false; added=false
 
     sed_script='
+      /^[MDA ?][MD?]$/!d;
       s/^M /staged_modified=true;/
       s/^D /staged_deleted=true;/
       s/^A /staged_added=true;/
