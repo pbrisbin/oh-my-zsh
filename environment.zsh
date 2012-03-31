@@ -66,8 +66,10 @@ for path_file in /etc/paths.d/*(.N); do
 done
 
 # Language
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.utf8
+if [[ "$OSTYPE" != darwin* ]]; then
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.utf8
+fi
 
 # Editors
 export EDITOR="vim"
@@ -115,6 +117,7 @@ path=(
   "$HOME/.cabal/bin"
   "$HOME/Code/bin"
   "$HOME/.bin"
+  /usr/local/Cellar/coreutils/8.15/libexec/gnubin/
   $path
 )
 
