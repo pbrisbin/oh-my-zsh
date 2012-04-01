@@ -1,18 +1,11 @@
 # vim: set ft=zsh:
 function sprunge() {
-  local lang url
+  local url
 
   if (( $# )); then
-    case "$1" in
-      *.rb) lang='?ruby'    ;;
-      *.hs) lang='?haskell' ;;
-      # TODO: more
-    esac
-
-    # post file
     read -r url < <(curl -s -F 'sprunge=<-' http://sprunge.us < "$1")
 
-    echo $url$lang
+    echo "$url?${1##*.}"
   else
     # normal, stdin usage
     curl -F 'sprunge=<-' http://sprunge.us
