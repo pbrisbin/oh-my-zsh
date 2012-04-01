@@ -24,7 +24,7 @@ unsetopt CHECK_JOBS       # Don't report on jobs when shell exit.
 
 # PATH
 typeset -gU cdpath fpath mailpath manpath path
-typeset -gUT INFOPATH infopath
+typeset -gUT INFOPATH infopath 2>/dev/null # errors on reloads
 
 cdpath=(
   $HOME
