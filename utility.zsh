@@ -11,7 +11,11 @@
 alias history-stat="history . | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
 
 # Serves a directory via HTTP.
-alias http-serve='python -m SimpleHTTPServer'
+if (( $+commands[python3] )); then
+  alias http-serve='python -m http.server'
+else
+  alias http-serve='python -m SimpleHTTPServer'
+fi
 
 # Makes a directory and changes to it.
 function mkdcd {
