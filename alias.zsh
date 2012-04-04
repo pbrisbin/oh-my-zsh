@@ -104,6 +104,7 @@ alias apptree='tree -I "dist|config|static|pandoc|tmp"'
 if (( $+commands[mpc] )); then
   alias n='mpc next'
   alias p='mpc prev'
+  alias np="mpc --format '%title% - %artist%' current | head -n 1"
 
   (( $+commands[albumbler] )) && alias a='albumbler'
 fi
