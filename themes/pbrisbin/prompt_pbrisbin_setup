@@ -6,6 +6,7 @@ function prompt_pbrisbin_precmd() {
   unsetopt XTRACE KSH_ARRAYS
 
   git_info=''
+  git_flags=''
 
   if [[ -e ".git" ]]; then
     local ref branch_format branch_formatted staged_modified \
@@ -22,7 +23,7 @@ function prompt_pbrisbin_precmd() {
     modified=false; deleted=false; added=false
 
     sed_script='
-      /^[MDA ?][MD?]$/!d;
+      /^[MDA ?][MD ?]$/!d;
       s/^M /staged_modified=true;/
       s/^D /staged_deleted=true;/
       s/^A /staged_added=true;/
@@ -32,8 +33,6 @@ function prompt_pbrisbin_precmd() {
     '
 
     eval $(git status -s 2>/dev/null | cut -c 1-2 | uniq | sed "$sed_script")
-
-    git_flags=''
 
     if $staged_modified || $staged_deleted || $staged_added; then
       zstyle -s ':omz:plugin:git:prompt' staged 'staged_formatted'
