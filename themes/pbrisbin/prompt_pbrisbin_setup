@@ -28,7 +28,7 @@ function prompt_pbrisbin_precmd() {
     added=false; ignored=false;
 
     # seen man git-status, Short Format
-    while read -r xy; do
+    while IFS='\n' read -r xy; do
       if [[ $xy == '??' ]]; then
         added=true
         continue
