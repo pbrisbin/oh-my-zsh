@@ -74,17 +74,17 @@ function prompt_pbrisbin_precmd() {
       zstyle -s ':omz:plugin:git:prompt' staged_added 'staged_added_formatted'
       git_flags+=$staged_added_formatted
     fi
-    
+
     if $staged_deleted; then
       zstyle -s ':omz:plugin:git:prompt' staged_deleted 'staged_deleted_formatted'
       git_flags+=$staged_deleted_formatted
     fi
-    
+
     if $staged_renamed; then
       zstyle -s ':omz:plugin:git:prompt' staged_renamed 'staged_renamed_formatted'
       git_flags+=$staged_renamed_formatted
     fi
-    
+
     if $staged_copied; then
       zstyle -s ':omz:plugin:git:prompt' staged_copied 'staged_copied_formatted'
       git_flags+=$staged_copied_formatted
