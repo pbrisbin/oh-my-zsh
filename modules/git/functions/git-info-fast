@@ -1,0 +1,223 @@
+# vim: set ft=zsh:
+#
+# Displays Git repository information. A simplification of git-info 
+# that shows less (and therefore runs faster).
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#   Patrick Brisbin <pbrisbin@gmail.com>
+#
+# Usage:
+#   Define the following styles in a prompt theme setup function.
+#
+#     # %a - Indicator to notify of added files.
+#     zstyle ':omz:module:git' added 'added:%a'
+#
+#     # %b - Branch name.
+#     zstyle ':omz:module:git' branch 'branch:%b'
+#
+#     # %d - Indicator to notify of deleted files.
+#     zstyle ':omz:module:git' deleted 'deleted:%d'
+#
+#     # %m - Indicator to notify of modified files.
+#     zstyle ':omz:module:git' modified 'modified:%m'
+#
+#     # %r - Indicator to notify of renamed files.
+#     zstyle ':omz:module:git' renamed 'renamed:%r'
+#
+#     # %U - Indicator to notify of unmerged files.
+#     zstyle ':omz:module:git' unmerged 'unmerged:%U'
+#
+#     # %u - Indicator to notify of untracked files.
+#     zstyle ':omz:module:git' untracked 'untracked:%u'
+#
+#     # Prompts.
+#     zstyle ':omz:module:git' info \
+#       'prompt'  ' git:(%b)' \
+#       'rprompt' '%a%d%m%r%u%U'
+#
+# TODO: Since this runs much faster, it might be ok to drop all the
+# logic around disabling it
+#
+
+# Load dependencies.
+omodload 'trap'
+
+# Gets the path to the Git directory.
+function _git-dir {
+  local git_dir="${$(git rev-parse --git-dir):A}"
+
+  if [[ -n "$git_dir" ]]; then
+    print "$git_dir"
+    return 0
+  fi
+
+  return 1
+}
+
+# Turns off git-info for the current repository.
+function _git-info-abort {
+  if ! is-true "$_git_info_executing"; then
+    return 1
+  fi
+
+  cat >&2 <<EOF
+
+
+Gathering status for certain repositories is time intensive.
+By pressing CTRL + C, you have turned off prompt Git status
+for this repository.
+
+To revert, execute:
+  git-info on
+
+EOF
+
+  unset _git_info_executing
+  git config --bool prompt.showinfo false
+  git-info
+  return 0
+}
+add-zsh-trap INT _git-info-abort
+
+# Gets the Git status information.
+function git-info-fast {
+  # Extended globbing is needed to parse repository status.
+  setopt LOCAL_OPTIONS
+  setopt EXTENDED_GLOB
+
+  local added=0
+  local added_format
+  local added_formatted
+  local branch
+  local branch_format
+  local branch_formatted
+  local branch_info
+  local deleted=0
+  local deleted_format
+  local deleted_formatted
+  local -A info_formats
+  local info_format
+  local modified=0
+  local modified_format
+  local modified_formatted
+  local renamed=0
+  local renamed_format
+  local renamed_formatted
+  local status_cmd
+  local unmerged=0
+  local unmerged_format
+  local unmerged_formatted
+  local untracked=0
+  local untracked_format
+  local untracked_formatted
+
+  # Clean up previous $git_info.
+  unset git_info_fast
+  typeset -gA git_info_fast
+
+  # Return if not inside a Git repository work tree.
+  if ! is-true "$(git rev-parse --is-inside-work-tree 2> /dev/null)"; then
+    return 1
+  fi
+
+  if (( $# > 0 )); then
+    if [[ "$1" == [Oo][Nn] ]]; then
+      git config --bool prompt.showinfo true
+    elif [[ "$1" == [Oo][Ff][Ff] ]]; then
+      git config --bool prompt.showinfo false
+    else
+      print "usage: $0 [ on | off ]" >&2
+    fi
+    return 0
+  fi
+
+  # Return if git-info is disabled.
+  if ! is-true "${$(git config --bool prompt.showinfo):-true}"; then
+    return 1
+  fi
+
+  # Used to abort and turn git-info off on SIGINT.
+  _git_info_executing=true
+
+  # Use porcelain status for easy parsing.
+  status_cmd='git status --porcelain'
+
+  # Get current status.
+  while IFS=$'\n' read line; do
+    # Count added, deleted, modified, renamed, unmerged, untracked.
+    # T (type change) is undocumented, see http://git.io/FnpMGw.
+    # For a table of scenarii, see http://i.imgur.com/2YLu1.png.
+    [[ "$line" == ([ACDMT][\ MT]|[ACMT]D) ]] && (( added++     ))
+    [[ "$line" == [\ ACMRT]D              ]] && (( deleted++   ))
+    [[ "$line" == ?[MT]                   ]] && (( modified++  ))
+    [[ "$line" == R?                      ]] && (( renamed++   ))
+    [[ "$line" == (AA|DD|U?|?U)           ]] && (( unmerged++  ))
+    [[ "$line" == \?\?                    ]] && (( untracked++ ))
+  done < <(${(z)status_cmd} | cut -c 1-2 | uniq 2> /dev/null)
+
+  # Format branch.
+  branch="${$(git symbolic-ref -q HEAD)##refs/heads/}"
+  if [[ -n "$branch" ]]; then
+    zstyle -s ':omz:module:git' branch 'branch_format'
+    zformat -f branch_formatted "$branch_format" "b:$branch"
+  fi
+
+  # Format added.
+  if (( $added > 0 )); then
+    zstyle -s ':omz:module:git' added 'added_format'
+    zformat -f added_formatted "$added_format" "a:$added_format"
+  fi
+
+  # Format deleted.
+  if (( $deleted > 0 )); then
+    zstyle -s ':omz:module:git' deleted 'deleted_format'
+    zformat -f deleted_formatted "$deleted_format" "d:$deleted_format"
+  fi
+
+  # Format modified.
+  if (( $modified > 0 )); then
+    zstyle -s ':omz:module:git' modified 'modified_format'
+    zformat -f modified_formatted "$modified_format" "m:$modified"
+  fi
+
+  # Format renamed.
+  if (( $renamed > 0 )); then
+    zstyle -s ':omz:module:git' renamed 'renamed_format'
+    zformat -f renamed_formatted "$renamed_format" "r:$renamed"
+  fi
+
+  # Format unmerged.
+  if (( $unmerged > 0 )); then
+    zstyle -s ':omz:module:git' unmerged 'unmerged_format'
+    zformat -f unmerged_formatted "$unmerged_format" "U:$unmerged"
+  fi
+
+  # Format untracked.
+  if (( $untracked > 0 )); then
+    zstyle -s ':omz:module:git' untracked 'untracked_format'
+    zformat -f untracked_formatted "$untracked_format" "u:$untracked"
+  fi
+
+  # Format info.
+  zstyle -a ':omz:module:git' info 'info_formats'
+  for info_format in ${(k)info_formats}; do
+    zformat -f REPLY "$info_formats[$info_format]" \
+      "U:$unmerged_formatted" \
+      "a:$added_formatted" \
+      "b:$branch_formatted" \
+      "d:$deleted_formatted" \
+      "m:$modified_formatted" \
+      "r:$renamed_formatted" \
+      "u:$untracked_formatted"
+    git_info_fast[$info_format]="$REPLY"
+  done
+
+  unset REPLY
+  unset _git_info_executing
+
+  return 0
+}
+
+git-info-fast "$@"
+
