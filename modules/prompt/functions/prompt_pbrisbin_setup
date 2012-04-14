@@ -1,116 +1,21 @@
 # vim: set ft=zsh:
+#
+# A minimal theme that uses git-info-fast for (slightly) less info for
+# (much) better performance.
+#
+# Authors:
+#   Patrick Brisbin <pbrisbin@gmail.com>
+#
+# Screenshots:
+#   http://pbrisbin.com/static/screenshots/desktop_1204141330.png
+#
 
-# sets git_info with minimal (read: fast) information
-function prompt_pbrisbin_precmd() {
+function prompt_pbrisbin_precmd {
   setopt LOCAL_OPTIONS
   unsetopt XTRACE KSH_ARRAYS
 
-  git_info=''
-  git_flags=''
-
-  if [[ -e ".git" ]]; then
-    local ref branch_format branch_formatted staged_modified \
-      staged_added staged_deleted staged_renamed staged_copied \
-      modified deleted added ignored merge_formatted \
-      staged_modified_formatted staged_added_formatted \
-      staged_deleted_formatted staged_renamed_formatted \
-      staged_copied_formatted modified_formatted deleted_formatted \
-      added_formatted xy x y
-
-    ref=$(git symbolic-ref HEAD 2>/dev/null) || return
-
-    zstyle -s ':omz:plugin:git:prompt' branch 'branch_format'
-    zformat -f branch_formatted "$branch_format" "b:${ref#refs/heads/}"
-
-    staged_modified=false; staged_added=false; staged_deleted=false;
-    staged_renamed=false; staged_copied=false; renamed=false;
-    copied=false; merge=false; modified=false; deleted=false;
-    added=false; ignored=false;
-
-    # seen man git-status, Short Format
-    while IFS='\n' read -r xy; do
-      if [[ $xy == '??' ]]; then
-        added=true
-        continue
-      fi
-
-      if [[ $xy == '!!' ]]; then
-        ignored=true
-        continue
-      fi
-
-      if [[ $xy =~ DD\|AU\|UD\|UA\|DU\|AA\|UU ]]; then
-        merge=true
-        continue
-      fi
-
-      x=${xy[1]}
-      y=${xy[2]}
-
-      case $x in
-        'M') staged_modified=true ;;
-        'D') staged_deleted=true  ;;
-        'R') staged_renamed=true  ;;
-        'C') staged_copied=true   ;;
-      esac
-
-      case $y in
-        'M') modified=true ;;
-        'D') deleted=true  ;;
-      esac
-    done < <(git status -s 2>/dev/null | cut -c 1-2 | uniq)
-
-    if $merge; then
-      zstyle -s ':omz:plugin:git:prompt' merge 'merge_formatted'
-      git_flags+=$merge_formatted
-    fi
-
-    if $staged_modified; then
-      zstyle -s ':omz:plugin:git:prompt' staged_modified 'staged_modified_formatted'
-      git_flags+=$staged_modified_formatted
-    fi
-
-    if $staged_added; then
-      zstyle -s ':omz:plugin:git:prompt' staged_added 'staged_added_formatted'
-      git_flags+=$staged_added_formatted
-    fi
-
-    if $staged_deleted; then
-      zstyle -s ':omz:plugin:git:prompt' staged_deleted 'staged_deleted_formatted'
-      git_flags+=$staged_deleted_formatted
-    fi
-
-    if $staged_renamed; then
-      zstyle -s ':omz:plugin:git:prompt' staged_renamed 'staged_renamed_formatted'
-      git_flags+=$staged_renamed_formatted
-    fi
-
-    if $staged_copied; then
-      zstyle -s ':omz:plugin:git:prompt' staged_copied 'staged_copied_formatted'
-      git_flags+=$staged_copied_formatted
-    fi
-
-    if $modified; then
-      zstyle -s ':omz:plugin:git:prompt' modified 'modified_formatted'
-      git_flags+=$modified_formatted
-    fi
-
-    if $deleted; then
-      zstyle -s ':omz:plugin:git:prompt' deleted 'deleted_formatted'
-      git_flags+=$deleted_formatted
-    fi
-
-    if $added; then
-      zstyle -s ':omz:plugin:git:prompt' added 'added_formatted'
-      git_flags+=$added_formatted
-    fi
-
-    if $ignored; then
-      zstyle -s ':omz:plugin:git:prompt' ignored 'ignored_formatted'
-      git_flags+=$ignored_formatted
-    fi
-
-    git_info="$branch_formatted"
+  if (( $+functions[git-info-fast] )); then
+    git-info-fast
   fi
 }
 
@@ -122,27 +27,27 @@ function prompt_pbrisbin_setup() {
   autoload -Uz add-zsh-hook
   add-zsh-hook precmd prompt_pbrisbin_precmd
 
-  zstyle ':omz:plugin:git:prompt' branch          ' %%B%F{cyan}(%f%F{red}%b%f%F{cyan})%f%%b'
-  zstyle ':omz:plugin:git:prompt' merge           ' %B%F{red}!%f%b'
-  zstyle ':omz:plugin:git:prompt' staged_modified ' %B%F{yellow}*%f%b'
-  zstyle ':omz:plugin:git:prompt' staged_added    ' %B%F{yellow}✚%f%b'
-  zstyle ':omz:plugin:git:prompt' staged_deleted  ' %B%F{yellow}✖%f%b'
-  zstyle ':omz:plugin:git:prompt' staged_renamed  ' %B%F{yellow}➜%f%b'
-  zstyle ':omz:plugin:git:prompt' staged_copied   ' %B%F{yellow}.%f%b'
-  zstyle ':omz:plugin:git:prompt' modified        ' %B%F{green}*%f%b'
-  zstyle ':omz:plugin:git:prompt' added           ' %B%F{cyan}✚%f%b'
-  zstyle ':omz:plugin:git:prompt' deleted         ' %B%F{red}✖%f%b'
-  zstyle ':omz:plugin:git:prompt' ignored         ' %B%F{black}-%f%b'
+  zstyle ':omz:module:git' branch    '%F{red}%b%f'
+  zstyle ':omz:module:git' added     '%F{yellow}+%f'
+  zstyle ':omz:module:git' deleted   '%F{red}x%f'
+  zstyle ':omz:module:git' modified  '%F{green}*%f'
+  zstyle ':omz:module:git' renamed   '%F{yellow}➜%f'
+  zstyle ':omz:module:git' unmerged  '%F{red}!%f'
+  zstyle ':omz:module:git' untracked '%F{cyan}+%f'
+  zstyle ':omz:module:git' info \
+    'prompt'  '%%B%F{cyan}(%f%b%%B%F{cyan})%f%%b' \
+    'rprompt' '%%B%U%a%d%r%m%u%%b'
 
-  PROMPT='%F{green}%p%f %F{cyan}%c%f${git_info} '
+  PROMPT='%F{green}%p%f %F{cyan}%c%f ${git_info_fast[prompt]} '
 
   if (( $+commands[rvm-prompt] )); then
-    RPROMPT='%(?::%B%F{red}%? %f%b) ${git_flags} %B%F{black}$(rvm-prompt i v g)%f%b '
+    RPROMPT='%(?::%B%F{red}%? %f%b) ${git_info_fast[rprompt]} %B%F{black}$(rvm-prompt i v g)%f%b '
   else
-    RPROMPT='%(?::%B%F{red}%? %f%b) ${git_flags} '
+    RPROMPT='%(?::%B%F{red}%? %f%b) ${get_info_fast[rprompt]} '
   fi
 
   SPROMPT='correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+
 }
 
 prompt_pbrisbin_setup "$@"
