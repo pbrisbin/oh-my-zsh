@@ -27,6 +27,9 @@ function prompt_pbrisbin_setup() {
   autoload -Uz add-zsh-hook
   add-zsh-hook precmd prompt_pbrisbin_precmd
 
+  zstyle ':omz:module:editor' completing '...'
+  zstyle ':omz:module:editor:keymap' alternate '<<<'
+
   zstyle ':omz:module:git' branch    '%F{red}%b%f'
   zstyle ':omz:module:git' added     '%F{yellow}+%f'
   zstyle ':omz:module:git' deleted   '%F{red}x%f'
@@ -41,9 +44,9 @@ function prompt_pbrisbin_setup() {
   PROMPT='%F{green}%p%f %F{cyan}%c%f ${git_info_fast[prompt]} '
 
   if (( $+commands[rvm-prompt] )); then
-    RPROMPT='%(?::%B%F{red}%? %f%b) ${git_info_fast[rprompt]} %B%F{black}$(rvm-prompt i v g)%f%b '
+    RPROMPT='${editor_info[keymap]} %(?::%B%F{red}%? %f%b) ${git_info_fast[rprompt]} %B%F{black}$(rvm-prompt i v g)%f%b '
   else
-    RPROMPT='%(?::%B%F{red}%? %f%b) ${get_info_fast[rprompt]} '
+    RPROMPT='${editor_info[keymap]} %(?::%B%F{red}%? %f%b) ${get_info_fast[rprompt]} '
   fi
 
   SPROMPT='correct %F{red}%R%f to %F{green}%r%f [nyae]? '
