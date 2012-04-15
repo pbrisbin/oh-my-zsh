@@ -36,49 +36,6 @@
 #       'prompt'  ' git:(%b)' \
 #       'rprompt' '%a%d%m%r%u%U'
 #
-# TODO: Since this runs much faster, it might be ok to drop all the
-# logic around disabling it
-#
-
-# Load dependencies.
-omodload 'trap'
-
-# Gets the path to the Git directory.
-function _git-dir {
-  local git_dir="${$(git rev-parse --git-dir):A}"
-
-  if [[ -n "$git_dir" ]]; then
-    print "$git_dir"
-    return 0
-  fi
-
-  return 1
-}
-
-# Turns off git-info for the current repository.
-function _git-info-abort {
-  if ! is-true "$_git_info_executing"; then
-    return 1
-  fi
-
-  cat >&2 <<EOF
-
-
-Gathering status for certain repositories is time intensive.
-By pressing CTRL + C, you have turned off prompt Git status
-for this repository.
-
-To revert, execute:
-  git-info on
-
-EOF
-
-  unset _git_info_executing
-  git config --bool prompt.showinfo false
-  git-info
-  return 0
-}
-add-zsh-trap INT _git-info-abort
 
 # Gets the Git status information.
 function git-info-fast {
@@ -116,29 +73,15 @@ function git-info-fast {
   unset git_info_fast
   typeset -gA git_info_fast
 
-  # Return if not inside a Git repository work tree.
-  if ! is-true "$(git rev-parse --is-inside-work-tree 2> /dev/null)"; then
-    return 1
-  fi
+  # Not in a repo.
+  if [[ ! -e ./.git ]]; then
+    zstyle -a ':omz:module:git' info 'info_formats'
+    for info_format in ${(k)info_formats}; do
+      git_info_fast[$info_format]=''
+    done
 
-  if (( $# > 0 )); then
-    if [[ "$1" == [Oo][Nn] ]]; then
-      git config --bool prompt.showinfo true
-    elif [[ "$1" == [Oo][Ff][Ff] ]]; then
-      git config --bool prompt.showinfo false
-    else
-      print "usage: $0 [ on | off ]" >&2
-    fi
     return 0
   fi
-
-  # Return if git-info is disabled.
-  if ! is-true "${$(git config --bool prompt.showinfo):-true}"; then
-    return 1
-  fi
-
-  # Used to abort and turn git-info off on SIGINT.
-  _git_info_executing=true
 
   # Use porcelain status for easy parsing.
   status_cmd='git status --porcelain'
@@ -154,7 +97,7 @@ function git-info-fast {
     [[ "$line" == R?                      ]] && (( renamed++   ))
     [[ "$line" == (AA|DD|U?|?U)           ]] && (( unmerged++  ))
     [[ "$line" == \?\?                    ]] && (( untracked++ ))
-  done < <(${(z)status_cmd} | cut -c 1-2 | uniq 2> /dev/null)
+  done < <(${(z)status_cmd} | cut -c 1-2 | 2>/dev/null)
 
   # Format branch.
   branch="${$(git symbolic-ref -q HEAD)##refs/heads/}"
@@ -214,7 +157,6 @@ function git-info-fast {
   done
 
   unset REPLY
-  unset _git_info_executing
 
   return 0
 }
