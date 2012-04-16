@@ -38,15 +38,15 @@ function prompt_pbrisbin_setup() {
   zstyle ':omz:module:git' unmerged  '%F{red}!%f'
   zstyle ':omz:module:git' untracked '%F{cyan}+%f'
   zstyle ':omz:module:git' info \
-    'prompt'  '%%B%F{cyan}(%f%b%%B%F{cyan})%f%%b' \
-    'rprompt' '%%B%U%a%d%r%m%u%%b'
+    'prompt'  ' %%B%F{cyan}(%f%b%%B%F{cyan})%f%%b' \
+    'rprompt' ' %%B%U%a%d%r%m%u%%b'
 
-  PROMPT='%F{green}%p%f %F{cyan}%c%f ${git_info_fast[prompt]} '
+  PROMPT=' %F{cyan}%c%f${git_info_fast[prompt]} '
 
   if (( $+commands[rvm-prompt] )); then
-    RPROMPT='${editor_info[keymap]} %(?::%B%F{red}%? %f%b) ${git_info_fast[rprompt]} %B%F{black}$(rvm-prompt i v g)%f%b '
+    RPROMPT='${editor_info[keymap]} %(?::%B%F{red}%? %f%b)${git_info_fast[rprompt]} %B%F{black}$(rvm-prompt i v g)%f%b '
   else
-    RPROMPT='${editor_info[keymap]} %(?::%B%F{red}%? %f%b) ${get_info_fast[rprompt]} '
+    RPROMPT='${editor_info[keymap]} %(?::%B%F{red}%? %f%b)${get_info_fast[rprompt]} '
   fi
 
   SPROMPT='correct %F{red}%R%f to %F{green}%r%f [nyae]? '
