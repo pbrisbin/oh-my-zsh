@@ -1,0 +1,15 @@
+#
+# Set an ad-hoc zenity-based timer.
+#
+# Authors:
+#   Patrick Brisbin <pbrisbin@gmail.com>
+#
+
+(( $+commands[zenity] )) || return 1
+
+local n="${1:-5m}"; shift
+
+if [[ -n $DISPLAY ]]; then
+  (sleep $n && zenity --info --title="Time's Up" --text="${*:-DING}") &
+  echo "timer set for $n"
+fi

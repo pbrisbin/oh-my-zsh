@@ -1,9 +1,0 @@
-# Unregisters all broken cabal packages
-function ghc-pkg-clean() {
-  (( $+commands[ghc-pkg] )) || return 1
-
-  while read -r pkg; do
-    echo "attempting to unregister $pkg..."
-    ghc-pkg $* unregister $pkg
-  done < <(ghc-pkg $* check |& sed '/^There are problems in package \([^:]*\):$/!d; s//\1/')
-}

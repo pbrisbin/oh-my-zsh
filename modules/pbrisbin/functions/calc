@@ -1,0 +1,12 @@
+#
+# Does calculations via bc with a fallback to awk.
+#
+# Authors:
+#   Patrick Brisbin <pbrisbin@gmail.com>
+#
+
+if (( $+commands[bc] )); then
+  echo "scale=10; $*" | bc -l
+else
+  awk "BEGIN { print $* }"
+fi

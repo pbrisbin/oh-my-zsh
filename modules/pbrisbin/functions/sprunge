@@ -1,0 +1,17 @@
+#
+# Paste file (or stdin) to sprunge. Adds extension param if from a file.
+#
+# Authors:
+#   Patrick Brisbin <pbrisbin@gmail.com>
+#
+
+local url
+
+if (( $# )); then
+  read -r url < <(curl -s -F 'sprunge=<-' http://sprunge.us < "$1")
+
+  echo "$url?${1##*.}"
+else
+  # normal, stdin usage
+  curl -F 'sprunge=<-' http://sprunge.us
+fi

@@ -1,0 +1,16 @@
+#
+# Generates and publishes rdocs for local sources
+#
+# Authors:
+#   Patrick Brisbin <pbrisbin@gmail.com>
+#
+
+(( $+commands[rdoc] )) || return 1
+
+local public="$HOME/Code/haskell/devsite/static/docs/ruby"
+local   name="${PWD##*/}"
+
+rdoc --title="$name" "$@" || return 1
+
+rm -rf "$public/$name"
+cp -r doc "$public/$name"

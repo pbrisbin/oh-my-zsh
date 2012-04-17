@@ -1,0 +1,21 @@
+#
+# Rip a dvd to iPad-compatible mp4.
+#
+# Authors:
+#   Patrick Brisbin <pbrisbin@gmail.com>
+#
+
+(( $+commands[HandBrakeCLI] )) || return 1
+
+(( $# )) || return 1
+
+local name="$1"; shift
+local drop="$HOME/Movies"; shift
+
+[[ -d "$drop" ]] || mkdir -p "$drop"
+
+local out="$drop/$name.mp4"
+
+echo "ripping /dev/sr0 => $out..."
+HandBrakeCLI -Z iPad "$@" -i /dev/sr0 -o "$out" 2>/dev/null </dev/null
+echo

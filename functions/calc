@@ -1,7 +1,0 @@
-# vim: set ft=zsh:
-
-if (( $+commands[bc] )); then
-  echo "scale=10; $*" | bc -l
-else
-  awk "BEGIN { print $* }"
-fi

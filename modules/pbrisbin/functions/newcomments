@@ -1,0 +1,19 @@
+#
+# Checks for new comments on pbrisbin.com
+#
+# Authors:
+#   Patrick Brisbin <pbrisbin@gmail.com>
+#
+
+(( $+commands[psql] )) || return 1
+
+  psql -U pbrisbin pbrisbin << EOF
+select
+  id,
+  "threadId",
+  "timeStamp",
+  "userEmail",
+  substring("content", 1, 60)
+from "SqlComment"
+order by "timeStamp" asc;
+EOF

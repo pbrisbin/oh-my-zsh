@@ -1,0 +1,14 @@
+#
+# Combine multiple pdfs into one
+#
+# Authors:
+#   Patrick Brisbin <pbrisbin@gmail.com>
+#
+
+(( $+commands[gs] )) || return 1
+
+[[ $# -ge 2 ]] || return 1
+
+local out="$1"; shift
+
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile="$out" "$@"

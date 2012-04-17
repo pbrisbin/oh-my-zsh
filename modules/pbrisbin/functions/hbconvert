@@ -1,0 +1,21 @@
+#
+# Convert an existing file to iPad-compatible mp4
+#
+# Authors:
+#   Patrick Brisbin <pbrisbin@gmail.com>
+#
+
+(( $+commands[HandBrakeCLI] )) || return 1
+
+(( $# )) || return 1
+
+local in="$1"; shift
+local drop="$HOME/Movies/converted"
+
+[[ -d "$drop" ]] || mkdir -p "$drop"
+
+local out="$drop/$(basename "${in%.*}").mp4"
+
+echo "converting $in => $out..."
+HandBrakeCLI -Z iPad "$@" -i "$in" -o "$out" 2>/dev/null </dev/null
+echo

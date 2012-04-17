@@ -1,0 +1,13 @@
+#
+# Unregister all ghc packages reported as broken by ghc-pkg check
+#
+# Authors:
+#   Patrick Brisbin <pbrisbin@gmail.com>
+#
+
+(( $+commands[ghc-pkg] )) || return 1
+
+while read -r pkg; do
+  echo "attempting to unregister $pkg..."
+  ghc-pkg $* unregister $pkg
+done < <(ghc-pkg $* check |& sed '/^There are problems in package \([^:]*\):$/!d; s//\1/')
