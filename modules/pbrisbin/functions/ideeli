@@ -5,7 +5,7 @@
 #   Patrick Brisbin <pbrisbin@gmail.com>
 #
 
-local services='mysqld mongodb memcached memcached_secondary riak activemq'
+services=('mysqld' 'mongodb' 'memcached' 'memcached_secondary' 'riak' 'activemq')
 
 case "$1" in
   up|start)
@@ -19,3 +19,5 @@ case "$1" in
     done
     ;;
 esac
+
+unset services
