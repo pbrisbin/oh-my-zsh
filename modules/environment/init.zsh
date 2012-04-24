@@ -72,7 +72,7 @@ export PAGER='less'
 
 # Grep
 if zstyle -t ':omz:environment:grep' color; then
-  export GREP_COLOR='37;45'
+  export GREP_COLOR='1;34'
   export GREP_OPTIONS='--color=auto'
 fi
 
