@@ -15,4 +15,4 @@ cabal haddock \
   --hyperlink-source "$@" || return 1
 
 rm -rf "$public/$name"
-cp -r "$dist/doc/html/$name" "$public/$name"
+cp -r "./dist/doc/html/$name" "$public/$name"
