@@ -149,3 +149,6 @@ alias gwx='git rm -r'
 alias gwX='git rm -rf'
 alias gwg='git grep'
 
+# Custom, git svn ops with auto-stashing
+alias gspull='git stash && git svn rebase && git stash apply'
+alias gspush='git stash && git svn dcommit && git stash apply'
