@@ -1,0 +1,4 @@
+# passes arguments to vim +:Notes, allowing for creation/edits of
+# vim-notes directly from the commandline. function not alias due the
+# trailing quote requirement.
+vim +":Note $@"
