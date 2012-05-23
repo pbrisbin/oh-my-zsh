@@ -17,6 +17,8 @@ alias gbx='git branch -d'
 alias gbX='git branch -D'
 alias gbm='git branch -m'
 alias gbM='git branch -M'
+alias gbs='git show-branch'
+alias gbS='git show-branch -a'
 
 # Commit (c)
 alias gc='git commit'
@@ -30,7 +32,7 @@ alias gcP='git cherry-pick --no-commit'
 alias gcr='git revert'
 alias gcR='git reset "HEAD^"'
 alias gcs='git show'
-alias gcv='git fsck | awk '\''/dangling commit/ {print $3}'\'' | git show --format="SHA1: %C(green)%h%C(reset) %f" --stdin | awk '\''/SHA1/ {sub("SHA1: ", ""); print}'\'''
+alias gcl='git-commit-lost'
 
 # Data (d)
 alias gd='git ls-files'
@@ -94,8 +96,8 @@ alias gpf='git push --force'
 alias gpa='git push --all'
 alias gpA='git push --all && git push --tags'
 alias gpt='git push --tags'
-alias gpc='git push --set-upstream origin "$(git-current-branch)"'
-alias gpp='git pull origin "$(git-current-branch)" && git push origin "$(git-branch)"'
+alias gpc='git push --set-upstream origin "$(git-branch-current)"'
+alias gpp='git pull origin "$(git-branch-current)" && git push origin "$(git-branch-current)"'
 
 # Rebase (r)
 alias gr='git rebase'
@@ -118,11 +120,13 @@ alias gRb='git-hub'
 # Stash (s)
 alias gs='git stash'
 alias gsa='git stash apply'
-alias gsc='git stash clear'
+alias gsc='git-stash-clear-interactive'
 alias gsx='git stash drop'
+alias gsd='git-stash-dropped'
 alias gsl='git stash list'
 alias gsL='git stash show --patch --stat'
 alias gsp='git stash pop'
+alias gsr='git-stash-recover'
 alias gss='git stash save --include-untracked'
 alias gsS='git stash save --patch --no-keep-index'
 

@@ -15,8 +15,8 @@ if is-callable 'dircolors'; then
   # GNU core utilities.
   alias ls='ls --group-directories-first'
 
-  if zstyle -t ':omz:alias:ls' color; then
-    if [[ -f "$HOME/.dir_colors" ]]; then
+  if zstyle -t ':omz:module:alias:ls' color; then
+    if [[ -s "$HOME/.dir_colors" ]]; then
       eval "$(dircolors "$HOME/.dir_colors")"
     else
       eval "$(dircolors)"
@@ -27,7 +27,7 @@ if is-callable 'dircolors'; then
   fi
 else
   # BSD core utilities.
-  if zstyle -t ':omz:alias:ls' color; then
+  if zstyle -t ':omz:module:alias:ls' color; then
     export LSCOLORS="exfxcxdxbxegedabagacad"
     alias ls="ls -G"
   else
@@ -75,10 +75,10 @@ alias type='type -a'
 # Mac OS X
 if [[ "$OSTYPE" == darwin* ]]; then
   alias o='open'
-  alias get='curl --continue-at - --location --progress-bar --remote-name'
+  alias get='curl --continue-at - --location --progress-bar --remote-name --remote-time'
 else
   alias o='xdg-open'
-  alias get='wget --continue --progress=bar'
+  alias get='wget --continue --progress=bar --timestamping'
 
   if (( $+commands[xclip] )); then
     alias pbcopy='xclip -selection clipboard -in'

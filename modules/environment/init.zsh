@@ -22,7 +22,7 @@ unsetopt BG_NICE          # Don't run all background jobs at a lower priority.
 unsetopt HUP              # Don't kill jobs on shell exit.
 unsetopt CHECK_JOBS       # Don't report on jobs when shell exit.
 
-# PATH
+# Paths
 typeset -gU cdpath fpath mailpath manpath path
 typeset -gUT INFOPATH infopath 2>/dev/null # errors on reloads
 
@@ -47,6 +47,7 @@ manpath=(
 for path_file in /etc/manpaths.d/*(.N); do
   manpath+=($(<$path_file))
 done
+unset path_file
 
 path=(
   /usr/local/{bin,sbin}
@@ -58,6 +59,7 @@ path=(
 for path_file in /etc/paths.d/*(.N); do
   path+=($(<$path_file))
 done
+unset path_file
 
 # Language
 if [[ "$OSTYPE" != darwin* ]]; then
