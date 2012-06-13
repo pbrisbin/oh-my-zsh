@@ -5,16 +5,6 @@
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
-# For Perl older than 5.10.14, install local::lib.
-#   curl -L -C - -O http://search.cpan.org/CPAN/authors/id/A/AP/APEIRON/local-lib-1.008004.tar.gz
-#   tar xvf local-lib-1.008004.tar.gz
-#   cd local-lib-1.008004
-#   perl Makefile.PL --bootstrap=$HOME/Library/Perl/5.12
-#   make && make test && make install
-#
-# Install cpanminus:
-#   curl -L http://cpanmin.us | perl - --self-upgrade
-#
 if [[ "$OSTYPE" == darwin* ]]; then
   # Perl is slow; cache its output.
   cache_file="${0:h}/cache.zsh"
@@ -39,11 +29,19 @@ if [[ "$OSTYPE" == darwin* ]]; then
 fi
 
 # Aliases
+
+# General
+alias pd='perldoc'
+alias pe='perl -wlne'
+
+# Perlbrew
+alias pb='perlbrew'
+alias pba='perlbrew available'
 alias pbi='perlbrew install'
 alias pbl='perlbrew list'
 alias pbo='perlbrew off'
+alias pbO='perlbrew switch-off'
 alias pbs='perlbrew switch'
 alias pbu='perlbrew use'
-alias ple='perl -wlne'
-alias pd='perldoc'
+alias pbx='perlbrew uninstall'
 

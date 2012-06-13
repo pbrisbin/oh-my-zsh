@@ -11,56 +11,75 @@ Installation
 Oh My Zsh will work with any recent release of Zsh, but the minimum recommended
 version is 4.3.10.
 
-   1. Clone the repository:
+  1. Clone the repository:
 
-      `git clone https://github.com/sorin-ionescu/oh-my-zsh.git ~/.oh-my-zsh`
+        git clone https://github.com/sorin-ionescu/oh-my-zsh.git ~/.oh-my-zsh
 
-   2. Initialize the submodules:
+  2. Initialize the submodules:
 
-      `cd ~/.oh-my-zsh && git submodule update --init --recursive`
+        cd ~/.oh-my-zsh && git submodule update --init --recursive
 
-   3. Create a new Zsh configuration by copying the Zsh template provided:
+  3. Create a new Zsh configuration by copying the Zsh configuration file
+     templates provided:
 
-      `cp ~/.oh-my-zsh/templates/zshrc ~/.zshrc`
+        for rcfile in ~/.oh-my-zsh/templates/z{shenv,shrc,login,logout}; do
+          cp -f $rcfile ~/.$rcfile:t
+        done
 
-   4. Set Zsh as your default shell:
+  4. Set Zsh as your default shell:
 
-      `chsh -s /bin/zsh`
+        chsh -s /bin/zsh
 
-   5. Open a new Zsh terminal window or tab.
+  5. Open a new Zsh terminal window or tab.
 
 ### Mac OS X
 
-If you have administrator privileges, you must fix an Apple misconfiguration in
-Mac OS X 10.7 Lion by renaming `/etc/zshenv` to `/etc/zprofile`, or Zsh will
-have the wrong `PATH` when executed non-interactively by scripts.
+If you have administrator privileges, you must fix an Apple-introduced problem
+in Mac OS X 10.5 Leopard by executing the following command, or BASH and Zsh
+will have the wrong `PATH` when executed non-interactively.
+
+    sudo chmod ugo-x /usr/libexec/path_helper
+
+`path_helper` is intended to make it easier for installers to add new paths to
+the environment without having to edit shell configuration files by adding
+a file with a path to the */etc/paths.d* directory.
+
+Unfortunately, `path_helper` always reads paths from */etc/paths* set by Apple
+then paths from */etc/paths.d* set by third party installers, and lastly paths
+from the `PATH` environment variable set by the parent process, which
+ultimately is set by the user with `export PATH=...` Thus, it reorders path
+priorities, and user */bin* directories meant to override system */bin*
+directories end up at the tail of the array.
 
 ### Troubleshooting
 
 If you are not able to find certain commands after switching to *Oh My Zsh*,
-modify the `PATH` variable in `environment.zsh` then open a new Zsh terminal
+modify the `PATH` variable in *~/.zshenv* then open a new Zsh terminal
 window or tab.
 
-## Usage
+Usage
+-----
 
 Oh My Zsh has many features disabled by default. Read the source code and
 accompanying README files to learn of what is available.
 
 ### Modules
 
-   1. Browse `modules/` to see what is available.
-   2. Load the modules you need in `~/.zshrc` then open a new Zsh terminal
-      window or tab.
+  1. Browse */modules* to see what is available.
+  2. Load the modules you need in *~/.zshrc* then open a new Zsh terminal window
+     or tab.
 
 ### Themes
 
-   1. For a list of themes, type `prompt -l`.
-   2. To preview a theme, type `prompt -p name`.
-   3. Load the theme you like in `~/.zshrc` then open a new Zsh terminal window
-      or tab.
-      ![sorin theme][2]
+  1. For a list of themes, type `prompt -l`.
+  2. To preview a theme, type `prompt -p name`.
+  3. Load the theme you like in *~/.zshrc* then open a new Zsh terminal window
+     or tab.
 
-## Customization
+     ![sorin theme][2]
+
+Customization
+-------------
 
 The project is managed via [Git][3]. It is highly recommend that you commit
 your changes and push them to [GitHub][4] to not lose them. If you do not know
@@ -69,20 +88,52 @@ how to use Git, follow this [tutorial][5] and bookmark this [reference][6].
 ### Completions
 
 Submit program completions to the [zsh-completions][7] project. The Oh My Zsh
-completions directory will be synched against it.
+completions directory will be synchronized against it.
 
-## Resources
+Resources
+---------
 
 The [Zsh Reference Card][8] is indispensable.
 
-## Contribute
+Contribute
+----------
 
 This project would not exist without all of its users and [contributors][9].
 
 If you have ideas on how to make the configuration easier to maintain or
 improve its performance, do not hesitate to fork and send pull requests.
 
-## License
+### Issue Reporting
+
+   - Check that the issue has not already been reported.
+   - Check that the issue has not already been fixed in the latest code.
+   - Open an issue with a clear title and description in grammatically correct,
+     complete sentences.
+
+### Pull Request
+
+   - Read [how to properly contribute to open source projects on GitHub][10].
+   - Use a topic branch to easily amend a pull request later, if necessary.
+   - Write [good commit messages][11].
+   - Squash commits on the topic branch before opening a pull request.
+   - Use the same coding style and spacing.
+   - Open a [pull request][12] that relates to but one subject with a clear
+     title and description in gramatically correct, complete sentences.
+
+#### Modules
+
+   - A *README.md* must be present.
+   - Large functions must be placed in a *functions* directory.
+   - Functions that take arguments must have completion.
+
+#### Themes
+
+   - A screenshots section must be present in the file header.
+   - The pull request description must have must have [embedded
+     screenshots][13].
+
+License
+-------
 
 (The MIT License)
 
@@ -115,4 +166,8 @@ SOFTWARE.
 [7]: https://github.com/zsh-users/zsh-completions
 [8]: http://www.bash2zsh.com/zsh_refcard/refcard.pdf
 [9]: https://github.com/sorin-ionescu/oh-my-zsh/contributors
+[10]: http://gun.io/blog/how-to-github-fork-branch-and-pull-request
+[11]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+[12]: https://help.github.com/articles/using-pull-requests
+[13]: http://daringfireball.net/projects/markdown/syntax#img
 

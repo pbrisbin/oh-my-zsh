@@ -3,18 +3,12 @@ Tmux
 
 Defines [tmux][1] aliases and provides for auto launching it at start-up.
 
-Aliases
--------
-
-  - `ta` attach or switch to a tmux session.
-  - `tl` list sessions managed by the tmux server.
-
 Settings
 --------
 
 ### Auto-start
 
-Start a tmux session automatically when Zsh is launched.
+Starts a tmux session automatically when Zsh is launched.
 
 To enable this feature, add the following line to *zshrc*:
 
@@ -27,6 +21,12 @@ To avoid keeping open sessions, this module sets `destroy-unattached off` on
 the background session and `destroy-unattached on` on every other session
 (global setting).
 
+Aliases
+-------
+
+  - `ta` attaches or switches to a tmux session.
+  - `tl` lists sessions managed by the tmux server.
+
 Caveats
 -------
 
@@ -38,7 +38,7 @@ following to *tmux.conf*:
    set-option -g default-command "reattach-to-user-namespace -l $SHELL -l"
 
 Furthermore, tmux is known to cause **kernel panics** on Mac OS X. A discussion
-about this and OMZ has already been opened [here][2].
+about this and OMZ has already been [opened][2].
 
 Authors
 -------

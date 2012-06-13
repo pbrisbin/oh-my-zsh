@@ -10,6 +10,7 @@
 min_zsh_version='4.3.10'
 if ! autoload -Uz is-at-least || ! is-at-least "$min_zsh_version"; then
   print "omz: old shell detected, minimum required: $min_zsh_version" >&2
+  return 1
 fi
 unset min_zsh_version
 
@@ -36,19 +37,4 @@ source "${0:h}/helper.zsh"
 zstyle -a ':omz:load' omodule 'omodules'
 omodload "$omodules[@]"
 unset omodules
-
-# Set environment variables for launchd processes.
-if [[ "$OSTYPE" == darwin* ]]; then
-  for env_var in PATH MANPATH; do
-    launchctl setenv "$env_var" "${(P)env_var}" &!
-  done
-  unset env_var
-fi
-
-# Compile the completion dump, to increase startup speed.
-dump_file="$HOME/.zcompdump"
-if [[ "$dump_file" -nt "${dump_file}.zwc" || ! -s "${dump_file}.zwc" ]]; then
-  zcompile "$dump_file"
-fi
-unset dump_file
 
