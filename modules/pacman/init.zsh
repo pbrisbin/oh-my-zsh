@@ -1,4 +1,3 @@
-#
 # Much simpler pacman aliases.
 #
 # Authors:

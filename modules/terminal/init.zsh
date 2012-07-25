@@ -5,12 +5,6 @@
 #   James Cox <james@imaj.es>
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
-# Usage:
-#   To auto set the terminal window and tab titles with the current command or
-#   directory, add the following to zshrc:
-#
-#     zstyle ':omz:module:terminal' auto-title 'yes'
-#
 
 # Dumb terminals lack support.
 if [[ "$TERM" == 'dumb' ]]; then
@@ -88,13 +82,13 @@ function set-title-precmd {
     if [[ "$TERM_PROGRAM" == 'Apple_Terminal' ]]; then
       # Set the current working directory in Apple Terminal.
       printf '\e]7;%s\a' "file://$HOST${PWD// /%20}"
-    else
-      set-window-title "${(%):-%~}"
-      for kind in tab screen; do
-        # Left-truncate the current working directory to 15 characters.
-        set-${kind}-title "${(%):-%15<...<%~%<<}"
-      done
     fi
+
+    set-window-title "${(%):-%~}"
+    for kind in tab screen; do
+      # Left-truncate the current working directory to 15 characters.
+      set-${kind}-title "${(%):-%15<...<%~%<<}"
+    done
   fi
 }
 add-zsh-hook precmd set-title-precmd
